@@ -11,25 +11,23 @@ using namespace std;
 class BloomFilter
 {
     private:
-    double fp_probability;
-    int setSize;
     int numberOfBits;
     int numberOfHash;
     vector<string> legalStrings;
-    vector<int> bitVector;
+    int* bitVector;
+    int* output;
+
 
     
 
 
 
     public:
-    BloomFilter(int setSize,double fp_probability,vector<string> legalStrings);
-    int getNumberOfBits(int setSize, double fp_probability);
-    int getHashNumber(int numberOfBits,int setSize);
+    BloomFilter(int numberOfBits,int numberOfHash,vector<string> legalStrings,int* bitVector,int* output);
     void computeBloomFilter();
-    void addElement(string item);
+    //void addElement(string item);
     void checkStream(vector<string> itemSet);
-    bool checkString(string item);
+    //bool checkString(string item, int i);
 
     
 

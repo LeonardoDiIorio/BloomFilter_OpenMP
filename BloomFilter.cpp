@@ -11,35 +11,20 @@
 
 using namespace std;
 
-BloomFilter::BloomFilter(int setSize,double fp_probability,vector<string> legalStrings)
+BloomFilter::BloomFilter(int numberOfBits,int numberOfHash,vector<string> legalStrings,int* bitVector,int*output)
 {
-    this->setSize=setSize;
-    this->fp_probability=fp_probability;
+    this->numberOfBits=numberOfBits;
+    this->numberOfHash=numberOfHash;
     this->legalStrings=legalStrings;
+    this->bitVector=bitVector;
+    this->output=output;
 }
 
 
-int BloomFilter::getNumberOfBits(int setSize, double fp_probability)
-{
-    double m = -(setSize * log(fp_probability))/pow(log(2),2);
-    return int(m);
-}
-
-int BloomFilter::getHashNumber(int numberOfBits,int setSize)
-{
-    int k = (numberOfBits/setSize) * log(2);
-    return int(k);
-}
 
 void BloomFilter::computeBloomFilter()
 {
-    this->numberOfBits=getNumberOfBits(setSize,fp_probability);
-    this->numberOfHash=getHashNumber(numberOfBits,setSize);
-    for(int n=0;n<numberOfBits;n++)
-    {
-        this->bitVector.emplace_back(0);
-    }
-   #pragma omp parallel for collapse(2)
+#pragma omp parallel for 
     for(int i=0;i<legalStrings.size();i++)
     {
         for(int j=0;j<numberOfHash;j++)
@@ -47,16 +32,32 @@ void BloomFilter::computeBloomFilter()
         uint32_t h=MurmurHash(&*legalStrings[i].begin(),sizeof(legalStrings[i]),j)%numberOfBits;
         this->bitVector[h]=1;
         }
-    }
-   
+    } 
+
 }
 
 
 void BloomFilter::checkStream(vector<string> check)
 {
-  #pragma omp parallel for
+#pragma omp parallel for
   for(int i=0;i<check.size();i++)
   {
+     for(int j=0;j<numberOfHash;j++)
+    {   
+        uint32_t h=MurmurHash(&*check[i].begin(),sizeof(check[i]),j)%numberOfBits;
+        if(bitVector[h]==0)
+        {
+          this->output[i]=0;
+        }
+    } 
+  }
+ 
+}
+
+
+//   checkString(check[i],i);
+ 
+ /*   
    if(checkString(check[i])==true)
    {
     // cout<<"la stringa"<<" "<<check[i]<<" "<<"è ammessa \n";
@@ -64,13 +65,12 @@ void BloomFilter::checkStream(vector<string> check)
    else 
    {
     // cout<<"la stringa"<<" "<<check[i]<<" "<<"non è ammessa \n";
-   }
-  }
- 
-}
+   } 
+ */
 
 
-bool BloomFilter::checkString(string check)
+
+/*   bool BloomFilter::checkString(string check,int i)
 {
     const char* key=&*check.begin();
     for(int j=0;j<numberOfHash;j++)
@@ -78,11 +78,12 @@ bool BloomFilter::checkString(string check)
         uint32_t h=MurmurHash(key,sizeof(check),j)%numberOfBits;
         if(bitVector[h]==0)
         {
-        return false;
+         return false;
         }
     }
     return true;
 }
 
+ 
 
-
+ */
