@@ -25,9 +25,9 @@ int main()
   while (std::getline(file, str))
   {
     legalStrings.push_back(str);
-    if(rand()%3==2)
+    if(rand()%4==1)
     {
-        checkStrings.push_back(str);
+    checkStrings.push_back(str);
     }
   } 
 
@@ -42,7 +42,7 @@ int main()
   }
 
   for(int k=2;k<maxThreads+1;k+=2)
-  {
+  {    
     omp_set_num_threads(k);
     int time=0;
     BloomFilter test(numberOfBits,numHashFunctions,legalStrings,bitVector,output);

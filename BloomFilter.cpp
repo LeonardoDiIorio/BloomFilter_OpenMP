@@ -55,35 +55,3 @@ void BloomFilter::checkStream(vector<string> check)
 }
 
 
-//   checkString(check[i],i);
- 
- /*   
-   if(checkString(check[i])==true)
-   {
-    // cout<<"la stringa"<<" "<<check[i]<<" "<<"è ammessa \n";
-   }
-   else 
-   {
-    // cout<<"la stringa"<<" "<<check[i]<<" "<<"non è ammessa \n";
-   } 
- */
-
-
-
-/*   bool BloomFilter::checkString(string check,int i)
-{
-    const char* key=&*check.begin();
-    for(int j=0;j<numberOfHash;j++)
-    {   
-        uint32_t h=MurmurHash(key,sizeof(check),j)%numberOfBits;
-        if(bitVector[h]==0)
-        {
-         return false;
-        }
-    }
-    return true;
-}
-
- 
-
- */
